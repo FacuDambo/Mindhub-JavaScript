@@ -1,0 +1,22 @@
+.link-text {
+    text-decoration: none;
+}
+
+.filter-width {
+    width: 15%;
+}
+
+.pepito {
+    background-color: red;
+}
+
+/* .table {
+    min-height: 25vh;
+} */
+
+tr td:nth-child(1){
+    width: 40%;
+}
+tr td:nth-child(n+2){
+    width: 15%;
+}
