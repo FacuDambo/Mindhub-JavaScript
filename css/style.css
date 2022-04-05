@@ -20,3 +20,11 @@ tr td:nth-child(1){
 tr td:nth-child(n+2){
     width: 15%;
 }
+
+#attendance tr td:nth-child(1){
+    width: 40%;
+}
+
+#attendance tr td:nth-child(n+2){
+    width: 30%;
+}

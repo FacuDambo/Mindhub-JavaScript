@@ -104,7 +104,7 @@ function recorrerCheckbox() {
     //ACA HAGO UN CONDICIONAL EN EL CUAL SI EL LARGO ES IGUAL A 0 Y SI EL VALOR DEL DROPDOWN ES IGUAL A TODOS
     //ME IMPRIME TODA LA TABLA COMPLETA
     if (checkBoxArray.length === 0 && getSelect.value == "all") { 
-        dibujarTablas() 
+        dibujarTablas()
     }
 }
 
