@@ -114,9 +114,13 @@ if (body.id == "attendance") {
 
 
 if (body.id == "loyalty") {
-    const sortByMissedVotes = (check) => dataArray.sort((a, b) => check=="Most" ? b.votes_with_party_pct - a.votes_with_party_pct : check=="Least" ? a.votes_with_party_pct - b.votes_with_party_pct : null)
+
+    let filteredArray = dataArray.filter(m => m.total_votes != 0)
+    const sortByMissedVotes = (check) => filteredArray.sort((a, b) => check=="Most" ? b.votes_with_party_pct - a.votes_with_party_pct : check=="Least" && a.votes_with_party_pct != 0.00 ? a.votes_with_party_pct - b.votes_with_party_pct : null)
     
     let getTenPercentAllVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+
+    
 
     let arrLeast = []
     let arrMost = []
@@ -129,11 +133,6 @@ if (body.id == "loyalty") {
 
     let getTableLeastEngaged = document.querySelector("#least-loyal")
     let getTableMostEngaged = document.querySelector("#most-loyal")
-
-
-    function totalVotes(params) {
-        let recorrerArray = arrLeast.forEach()
-    }
 
 
     function printMembersLoyalty(array, id) {
