@@ -28,3 +28,10 @@ tr td:nth-child(n+2){
 #attendance tr td:nth-child(n+2){
     width: 30%;
 }
+
+
+.accordion-button {
+    font-size: 2rem;
+    font-weight: 500;
+    padding-left: 0;
+}

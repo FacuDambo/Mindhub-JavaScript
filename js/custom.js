@@ -81,20 +81,41 @@ const sortByLeastMissedVotes = dataArray.sort((a, b) => b.missed_votes - a.misse
 const body = document.querySelector("body")
 
 if (body.id == "attendance") {
-    const sortByMissedVotes = (check) => dataArray.sort((a, b) => check=="Most" ? a.missed_votes_pct - b.missed_votes_pct : check=="Least" ? b.missed_votes_pct - a.missed_votes_pct : null)
+    let filteredArray = dataArray.filter(m => m.total_votes != 0)
+    const sortByMissedVotes = (check) => filteredArray.sort((a, b) => 
+    check=="Most" ? a.missed_votes_pct - b.missed_votes_pct : 
+    check=="Least" ? b.missed_votes_pct - a.missed_votes_pct : null)
 
-    let getTenPercentAllVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+    let getTenPercentLeastVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+    let getTenPercentMostVotes = Math.floor(sortByMissedVotes("Most").length * 0.1)
+
+
+    console.log(getTenPercentMostVotes);
 
     let arrLeast = []
     let arrMost = []
-    for (let i = 0; i < getTenPercentAllVotes; i++) {
-        arrLeast.push(sortByMissedVotes("Least")[i])
-        arrMost.push(sortByMissedVotes("Most")[i])
-    }
 
+
+    function megaSuperAwesomeFunction(funct, votes, array) {
+        //CHEQUEAR SI SE REPITEN LOS NUMEROS, EN CASO DE REPETIRSE AGREGAR MAS LENGTH
+        while (funct[votes - 1].missed_votes_pct == funct[votes].missed_votes_pct) {
+            votes++
+        }
+
+
+        //EMPUJAR A UN ARRAY NUEVO (DEPENDIENDO SI ES MOST O LEAST)
+        for (let i = 0; i < votes; i++) {
+            array.push(funct[i])
+        }
+    }
+    megaSuperAwesomeFunction(sortByMissedVotes("Most"), getTenPercentMostVotes, arrMost)
+    megaSuperAwesomeFunction(sortByMissedVotes("Least"), getTenPercentLeastVotes, arrLeast)
+
+
+    //IMPRIMIR TABLA
     let getTableLeastEngaged = document.querySelector("#least-engaged")
     let getTableMostEngaged = document.querySelector("#most-engaged")
-
+    
     function printMembersEngagment(array, id) {
         array.forEach(info => {
         let createRow = document.createElement("tr");
@@ -114,26 +135,35 @@ if (body.id == "attendance") {
 
 
 if (body.id == "loyalty") {
-
     let filteredArray = dataArray.filter(m => m.total_votes != 0)
-    const sortByMissedVotes = (check) => filteredArray.sort((a, b) => check=="Most" ? b.votes_with_party_pct - a.votes_with_party_pct : check=="Least" && a.votes_with_party_pct != 0.00 ? a.votes_with_party_pct - b.votes_with_party_pct : null)
-    
-    let getTenPercentAllVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+    const sortByMissedVotes = (check) => filteredArray.sort((a, b) => 
+    check=="Most" ? b.votes_with_party_pct - a.votes_with_party_pct : 
+    check=="Least" ? a.votes_with_party_pct - b.votes_with_party_pct : null)
 
-    
+    let getTenPercentLeastVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+    let getTenPercentMostVotes = Math.floor(sortByMissedVotes("Most").length * 0.1)
+
 
     let arrLeast = []
     let arrMost = []
-    for (let i = 0; i < getTenPercentAllVotes; i++) {
-        arrLeast.push(sortByMissedVotes("Least")[i])
-        arrMost.push(sortByMissedVotes("Most")[i])
-    }
 
-    console.log(arrLeast, arrMost);
+    function megaSuperAwesomeFunction(fun, votes, array) {
+        //CHEQUEAR SI SE REPITEN LOS NUMEROS, EN CASO DE REPETIRSE AGREGAR MAS LENGTH
+        while (fun[votes - 1].votes_with_party_pct == fun[votes].votes_with_party_pct) {
+            votes++
+        }
+
+        //EMPUJAR A UN ARRAY NUEVO (DEPENDIENDO SI ES MOST O LEAST)
+        for (let i = 0; i < votes; i++) {
+            array.push(fun[i])
+        }
+    }
+    megaSuperAwesomeFunction(sortByMissedVotes("Least"), getTenPercentLeastVotes, arrLeast)
+    megaSuperAwesomeFunction(sortByMissedVotes("Most"), getTenPercentMostVotes, arrMost)
+
 
     let getTableLeastEngaged = document.querySelector("#least-loyal")
     let getTableMostEngaged = document.querySelector("#most-loyal")
-
 
     function printMembersLoyalty(array, id) {
         array.forEach(info => {
