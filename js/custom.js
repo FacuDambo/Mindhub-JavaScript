@@ -1,39 +1,17 @@
-let dataArray = data.results[0].members
-
 //Filtro de partidos
-const filterParties = party => dataArray.filter(i => i.party == party).length
-
-//----------------------------------Imprimir primer tabla de senado----------------------------------
-/* function imprimirTablaSenado () {
-    let getTableReps = document.querySelectorAll('.attendance-reps')
-    getTableReps.forEach(i => i.innerHTML = 
-    `${i.previousElementSibling.innerHTML == "Democrats" 
-    ? filterParties("D")
-    : i.previousElementSibling.innerHTML == "Republicans"
-    ? filterParties("R")
-    : i.previousElementSibling.innerHTML == "Independent"
-    ? filterParties("ID")
-    : i.previousElementSibling.innerHTML == "Total"
-    ? dataArray.length
-    : null}`)
-
-    let getTableVotes = document.querySelectorAll('.attendance-votes')
-    getTableVotes.forEach(i => i.innerHTML =
-    `${i.previousElementSibling.previousElementSibling.innerHTML == "Democrats"
-    ? "#" + getMembers("D")
-    : i.previousElementSibling.previousElementSibling.innerHTML == "Republicans"
-    ? "#" + getMembers("R")
-    : i.previousElementSibling.previousElementSibling.innerHTML == "Independent"
-    ? "#" + getMembers("ID")
-    : i.previousElementSibling.previousElementSibling.innerHTML == "Total"
-    ? "-"
-    : null}`)
-} */
-//No funciona ^^^^^^^^^^^^^^
-
 const getAttendance = document.querySelector("#tabla-total")
 
-function imprimirTablaTotal() {
+function imprimirTablaTotal(array) {
+    const filterParties = (party) => array.filter(i => i.party == party).length
+    
+    function getMembers(party) {
+        let arr = []
+        let getData = array.filter(m => party == "" ? m.party : m.party == party ? m.party== party : null) 
+        getData.forEach(a => arr.push(a.votes_with_party_pct))
+        let getTotal = (arr.reduce((a, b) => a + b, 0)/arr.length).toFixed(2);
+        return getTotal
+    }
+
     getAttendance.innerHTML = 
     `<tr>
     <td>Democrats</td>
@@ -55,129 +33,137 @@ function imprimirTablaTotal() {
 
     <tr>
     <td>Total</td>
-    <td>${dataArray.length}</td>
+    <td>${array.length}</td>
     <td>${getMembers("")}%</td>
     </tr>`
 }
 
 
-function getMembers(party) {
-    let arr = []
-    let getData = dataArray.filter(m => party == "" ? m.party : m.party == party ? m.party== party : null) 
-    getData.forEach(a => arr.push(a.votes_with_party_pct))
-    let getTotal = (arr.reduce((a, b) => a + b, 0)/arr.length).toFixed(2);
-    return getTotal
-}
-
-imprimirTablaTotal()
-
-
-
 //----------------------------------SEGUNDA Y TERCER TABLA----------------------------------
 
-/* const sortByMostMissedVotes = dataArray.sort((a, b) => a.missed_votes - b.missed_votes)
-const sortByLeastMissedVotes = dataArray.sort((a, b) => b.missed_votes - a.missed_votes) */
 
-const body = document.querySelector("body")
+function filterByPage(array, id) {
+    const body = document.querySelector("body")
+    if (body.id == "attendance") {
+        let filteredArray = array.filter(m => m.total_votes != 0)
+        const sortByMissedVotes = (check) => filteredArray.sort((a, b) => 
+        check=="Most" ? a.missed_votes_pct - b.missed_votes_pct : 
+        check=="Least" ? b.missed_votes_pct - a.missed_votes_pct : null)
 
-if (body.id == "attendance") {
-    let filteredArray = dataArray.filter(m => m.total_votes != 0)
-    const sortByMissedVotes = (check) => filteredArray.sort((a, b) => 
-    check=="Most" ? a.missed_votes_pct - b.missed_votes_pct : 
-    check=="Least" ? b.missed_votes_pct - a.missed_votes_pct : null)
+        let getTenPercentLeastVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+        let getTenPercentMostVotes = Math.floor(sortByMissedVotes("Most").length * 0.1)
 
-    let getTenPercentLeastVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
-    let getTenPercentMostVotes = Math.floor(sortByMissedVotes("Most").length * 0.1)
-
-
-    console.log(getTenPercentMostVotes);
-
-    let arrLeast = []
-    let arrMost = []
+        let arrLeast = []
+        let arrMost = []
 
 
-    function megaSuperAwesomeFunction(funct, votes, array) {
-        //CHEQUEAR SI SE REPITEN LOS NUMEROS, EN CASO DE REPETIRSE AGREGAR MAS LENGTH
-        while (funct[votes - 1].missed_votes_pct == funct[votes].missed_votes_pct) {
-            votes++
+        function megaSuperAwesomeFunction(funct, votes, array) {
+            //CHEQUEAR SI SE REPITEN LOS NUMEROS, EN CASO DE REPETIRSE AGREGAR MAS LENGTH
+            while (funct[votes - 1].missed_votes_pct == funct[votes].missed_votes_pct) {
+                votes++
+            }
+
+
+            //EMPUJAR A UN ARRAY NUEVO (DEPENDIENDO SI ES MOST O LEAST)
+            for (let i = 0; i < votes; i++) {
+                array.push(funct[i])
+            }
+        }
+        megaSuperAwesomeFunction(sortByMissedVotes("Most"), getTenPercentMostVotes, arrMost)
+        megaSuperAwesomeFunction(sortByMissedVotes("Least"), getTenPercentLeastVotes, arrLeast)
+
+
+        //IMPRIMIR TABLA
+        let getTableLeastEngaged = document.querySelector(`#${id}-least-engaged`)
+        let getTableMostEngaged = document.querySelector(`#${id}-most-engaged`)
+        
+        function printMembersEngagment(array, id) {
+            array.forEach(info => {
+            let createRow = document.createElement("tr");
+            createRow.className = "table-row"
+            createRow.innerHTML = 
+            `<td><a href="${info.url}" class="link-text">${info.first_name + " " + (info.middle_name == null ? "" : info.middle_name ) + " " + info.last_name}</a></td>
+            <td>${info.missed_votes}</td>
+            <td>${info.missed_votes_pct}%</td>`
+            
+            id.appendChild(createRow)
+            })
         }
 
-
-        //EMPUJAR A UN ARRAY NUEVO (DEPENDIENDO SI ES MOST O LEAST)
-        for (let i = 0; i < votes; i++) {
-            array.push(funct[i])
-        }
+        printMembersEngagment(arrLeast, getTableLeastEngaged)
+        printMembersEngagment(arrMost, getTableMostEngaged)
     }
-    megaSuperAwesomeFunction(sortByMissedVotes("Most"), getTenPercentMostVotes, arrMost)
-    megaSuperAwesomeFunction(sortByMissedVotes("Least"), getTenPercentLeastVotes, arrLeast)
 
 
-    //IMPRIMIR TABLA
-    let getTableLeastEngaged = document.querySelector("#least-engaged")
-    let getTableMostEngaged = document.querySelector("#most-engaged")
+    if (body.id == "loyalty") {
+        let filteredArray = array.filter(m => m.total_votes != 0)
+        const sortByMissedVotes = (check) => filteredArray.sort((a, b) => 
+        check=="Most" ? b.votes_with_party_pct - a.votes_with_party_pct : 
+        check=="Least" ? a.votes_with_party_pct - b.votes_with_party_pct : null)
+
+        let getTenPercentLeastVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
+        let getTenPercentMostVotes = Math.floor(sortByMissedVotes("Most").length * 0.1)
+
+
+        let arrLeast = []
+        let arrMost = []
+
+        function megaSuperAwesomeFunction(fun, votes, array) {
+            //CHEQUEAR SI SE REPITEN LOS NUMEROS, EN CASO DE REPETIRSE AGREGAR MAS LENGTH
+            while (fun[votes - 1].votes_with_party_pct == fun[votes].votes_with_party_pct) {
+                votes++
+            }
+
+            //EMPUJAR A UN ARRAY NUEVO (DEPENDIENDO SI ES MOST O LEAST)
+            for (let i = 0; i < votes; i++) {
+                array.push(fun[i])
+            }
+        }
+        megaSuperAwesomeFunction(sortByMissedVotes("Least"), getTenPercentLeastVotes, arrLeast)
+        megaSuperAwesomeFunction(sortByMissedVotes("Most"), getTenPercentMostVotes, arrMost)
+
+
+        let getTableLeastEngaged = document.querySelector(`#${id}-least-loyal`)
+        let getTableMostEngaged = document.querySelector(`#${id}-most-loyal`)
+
+        function printMembersLoyalty(array, id) {
+            array.forEach(info => {
+            let createRow = document.createElement("tr");
+            createRow.className = "table-row"
+            createRow.innerHTML = 
+            `<td><a href="${info.url}" class="link-text">${info.first_name + " " + (info.middle_name == null ? "" : info.middle_name ) + " " + info.last_name}</a></td>
+            <td>${Math.round(info.total_votes / 100 * info.votes_with_party_pct)}</td>
+            <td>${info.votes_with_party_pct}%</td>`
+            
+            id.appendChild(createRow)
+            })
+        }
+
+        printMembersLoyalty(arrLeast, getTableLeastEngaged)
+        printMembersLoyalty(arrMost, getTableMostEngaged)
+    }
+}
+
+//Obtener el json de forma asincrona
+
+let chamber = document.querySelector("#house") ? "house" : "senate"
+const URLAPI = `https://api.propublica.org/congress/v1/113/${chamber}/members.json`
+
+let init = {
+    method: "GET",
+    headers: {
+        "X-API-Key": "7u7HxDcBz967AlQFNZJKamUHeeWU8mU0eaQbhINv"
+    }
+}
+
+fetch(URLAPI, init)
+.then(res => res.json())
+.then(mem => {
+    const members = mem.results[0].members
     
-    function printMembersEngagment(array, id) {
-        array.forEach(info => {
-        let createRow = document.createElement("tr");
-        createRow.className = "table-row"
-        createRow.innerHTML = 
-        `<td><a href="${info.url}" class="link-text">${info.first_name + " " + (info.middle_name == null ? "" : info.middle_name ) + " " + info.last_name}</a></td>
-        <td>${info.missed_votes}</td>
-        <td>${info.missed_votes_pct}%</td>`
-        
-        id.appendChild(createRow)
-        })
-    }
-
-    printMembersEngagment(arrLeast, getTableLeastEngaged)
-    printMembersEngagment(arrMost, getTableMostEngaged)
-}
-
-
-if (body.id == "loyalty") {
-    let filteredArray = dataArray.filter(m => m.total_votes != 0)
-    const sortByMissedVotes = (check) => filteredArray.sort((a, b) => 
-    check=="Most" ? b.votes_with_party_pct - a.votes_with_party_pct : 
-    check=="Least" ? a.votes_with_party_pct - b.votes_with_party_pct : null)
-
-    let getTenPercentLeastVotes = Math.floor(sortByMissedVotes("Least").length * 0.1)
-    let getTenPercentMostVotes = Math.floor(sortByMissedVotes("Most").length * 0.1)
-
-
-    let arrLeast = []
-    let arrMost = []
-
-    function megaSuperAwesomeFunction(fun, votes, array) {
-        //CHEQUEAR SI SE REPITEN LOS NUMEROS, EN CASO DE REPETIRSE AGREGAR MAS LENGTH
-        while (fun[votes - 1].votes_with_party_pct == fun[votes].votes_with_party_pct) {
-            votes++
-        }
-
-        //EMPUJAR A UN ARRAY NUEVO (DEPENDIENDO SI ES MOST O LEAST)
-        for (let i = 0; i < votes; i++) {
-            array.push(fun[i])
-        }
-    }
-    megaSuperAwesomeFunction(sortByMissedVotes("Least"), getTenPercentLeastVotes, arrLeast)
-    megaSuperAwesomeFunction(sortByMissedVotes("Most"), getTenPercentMostVotes, arrMost)
-
-
-    let getTableLeastEngaged = document.querySelector("#least-loyal")
-    let getTableMostEngaged = document.querySelector("#most-loyal")
-
-    function printMembersLoyalty(array, id) {
-        array.forEach(info => {
-        let createRow = document.createElement("tr");
-        createRow.className = "table-row"
-        createRow.innerHTML = 
-        `<td><a href="${info.url}" class="link-text">${info.first_name + " " + (info.middle_name == null ? "" : info.middle_name ) + " " + info.last_name}</a></td>
-        <td>${Math.round(info.total_votes / 100 * info.votes_with_party_pct)}</td>
-        <td>${info.votes_with_party_pct}%</td>`
-        
-        id.appendChild(createRow)
-        })
-    }
-
-    printMembersLoyalty(arrLeast, getTableLeastEngaged)
-    printMembersLoyalty(arrMost, getTableMostEngaged)
-}
+    imprimirTablaTotal(members)
+    filterByPage(members, chamber)
+    
+        let loader = document.querySelector("#spinner-container")
+        loader.classList.add("hidden")
+    })

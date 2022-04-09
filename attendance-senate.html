@@ -12,6 +12,12 @@
 </head>
 
 <body id="attendance">
+    <div class="spinner-container" id="spinner-container">
+        <div class="spinner">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Seal_of_the_United_States_Congress.svg" alt="congress logo">
+            <span>Loading...</span>
+        </div>
+    </div>
     <header>
         <div class="d-flex justify-content-between align-items-center mx-5">
             <a href="./index.html" class="text-decoration-none fs-1">Data Insight Group</a>
@@ -65,7 +71,7 @@
     </nav>
 
 
-    <div class="container">
+    <div class="container" id="senate">
         <div class="row row-cols-2">
             <div class="col p-4">
                 <h2>Congressmen</h2>
@@ -105,7 +111,7 @@
                             <th>% Missed</th>
                         </tr>
                     </thead>
-                    <tbody id="least-engaged">
+                    <tbody id="senate-least-engaged">
                     </tbody>
                 </table>
             </div>
@@ -120,7 +126,7 @@
                             <th>% Missed</th>
                         </tr>
                     </thead>
-                    <tbody id="most-engaged">
+                    <tbody id="senate-most-engaged">
                     </tbody>
                 </table>
             </div>
@@ -136,7 +142,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
     </script>
-    <script src="./data/senate.js"></script>
     <script src="./js/custom.js"></script>
 </body>
 
