@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="senate">
 
 <head>
     <meta charset="UTF-8">
@@ -71,7 +71,7 @@
     </nav>
 
     <!--Table container-->
-    <div class="container">
+    <div class="container" id="app">
         <div class="col-6 d-flex flex-column m-4">
                 <h2>Senators</h2>
             <p>First convened in 1789, the composition and powers of the Senate are established in Article One of the U.S. Constitution. Each state is represented by two senators, regardless of population, who serve staggered six-year terms. The Senate has several exclusive powers not granted to the House, including consenting to treaties as a precondition to their ratification and consenting to or confirming appointments of Cabinet secretaries, federal judges, other federal executive officials, military officers, regulatory officials, ambassadors, and other federal uniformed officers, as well as trial of federal officials impeached by the House.</p>
@@ -79,25 +79,26 @@
         </div>
 
 
-        <form class="m-4 d-flex flex-column"> Filter by party
+        <form class="m-4 d-flex flex-column" v-on:change="recorrerCheckbox"> Filter by party
             <div class="m-4 d-flex">
                 <div class="form-check-inline form-switch mx-4 filter-width">
-                    <input class="form-check-input" type="checkbox" role="switch" value="D" id="democrat">
+                    <input class="form-check-input" type="checkbox" role="switch" value="D" id="democrat" v-model="party">
                     <label class="form-check-label" for="democrat">Democrat</label>
                 </div>
                 <div class="form-check-inline form-switch mx-4 filter-width">
-                    <input class="form-check-input" type="checkbox" role="switch" value="R" id="republican">
+                    <input class="form-check-input" type="checkbox" role="switch" value="R" id="republican" v-model="party">
                     <label class="form-check-label" for="republican">Republican</label>
                 </div>
                 <div class="form-check-inline form-switch mx-4 filter-width">
-                    <input class="form-check-input" type="checkbox" role="switch" value="ID" id="independent">
+                    <input class="form-check-input" type="checkbox" role="switch" value="ID" id="independent" v-model="party">
                     <label class="form-check-label" for="independent">Independent</label>
                 </div>
             </div>
-            
+            {{party}}
 
-            <select class="form-select" aria-label="Default select example" id="select-dropdown">
+            <select class="form-select" aria-label="Default select example" id="select-dropdown" v-model="states">
                 <option selected value="all">All states</option>
+                <option v-for="states in getParties()">{{states}}</option>
             </select>
         </form>
 
@@ -112,7 +113,13 @@
                 </tr>
             </thead>
             <tbody id="politician-table" class="col-9">
-                
+                <tr v-for="mems in miembrosAuxiliar">
+                    <td><a v-bind:href="mems.url">{{mems.first_name}} {{mems.middle_name == null ? "" : mems.middle_name}} {{mems.last_name}}</a></td>
+                    <td v-bind:class='(mems.party == "R") ? "table-danger" : (mems.party == "D") ? "table-primary" : "table-warning"'>{{mems.party}}</td>
+                    <td>{{mems.state}}</td>
+                    <td>{{mems.seniority}}</td>
+                    <td>{{mems.votes_with_party_pct}}%</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -127,7 +134,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
     </script>
-    <script src="./js/main.js"></script>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="./js/mainVue.js"></script>
 </body>
 
 </html>

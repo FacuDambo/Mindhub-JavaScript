@@ -26,7 +26,6 @@ if (body.id == "congress") {
     //AGARRAR EL FORM CON CHECKBOXES Y EL DROPDOWN
     const getForm = document.querySelector("form")
     const getSelect = document.querySelector("#select-dropdown")
-    const getSelectValue = getSelect.value
     const getCheckbox = getForm.querySelectorAll("input[type='checkbox']")
 
     //IMPRIMIR SEGUN CAMBIO AL FORM
